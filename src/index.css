@@ -1,0 +1,702 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================================
+   FARMO — Smart Livestock Management
+   
+   Warm natural green palette with white cards, soft shadows, and a clean
+   modern feel. Inspired by nature — deep forest greens with warm accents.
+   ============================================================================ */
+
+@layer base {
+  :root {
+    /*
+     * The palette is defined ONCE, here, as space-separated RGB channels.
+     *
+     * tailwind.config.js reads these same channels via
+     * `rgb(var(--x-rgb) / <alpha-value>)`, so a Tailwind class like `bg-card2`
+     * and a CSS `var(--card-2)` can never disagree. They did disagree before:
+     * the config still held the old dark-forest hexes after the app was
+     * restyled light, which painted Settings, Add Animal and Device Details on
+     * a near-black background. Channels rather than `rgb(from ...)` because
+     * relative-colour syntax is too new for the Android WebViews this PWA has
+     * to run on.
+     *
+     * Change a colour here and both systems follow.
+     */
+
+    /* ---- ground ------------------------------------------------------- */
+    --bg-rgb:        16 14 12;      /* the storm's own darkness */
+    --bg-2-rgb:      22 19 16;
+    --card-rgb:      28 24 21;
+    --card-2-rgb:    40 35 30;      /* inner tiles, inputs, chips */
+    --line-rgb:      74 66 58;
+
+    /* ---- ink ---------------------------------------------------------- */
+    --text-rgb:      244 238 230;
+    --text-dim-rgb:  184 174 162;
+    --text-faint-rgb:138 128 117;
+
+    /* ---- the one accent ----------------------------------------------- */
+    --green-rgb:      104 191 126;
+    --green-deep-rgb: 74 160 98;
+
+    /* ---- status ------------------------------------------------------- */
+    --amber-rgb:      237 178 74;
+    --red-rgb:        240 106 96;
+    --blue-rgb:       109 168 240;
+
+    /* ---- named forms of the above, for plain CSS ---------------------- */
+    --bg:        rgb(var(--bg-rgb));
+    --bg-2:      rgb(var(--bg-2-rgb));
+    --card:      rgb(var(--card-rgb));
+    --card-2:    rgb(var(--card-2-rgb));
+    --line:      rgb(var(--line-rgb));
+    --line-soft: rgb(255 255 255 / .09);
+
+    --text:      rgb(var(--text-rgb));
+    --text-dim:  rgb(var(--text-dim-rgb));
+    --text-faint:rgb(var(--text-faint-rgb));
+
+    --green:      rgb(var(--green-rgb));
+    --green-deep: rgb(var(--green-deep-rgb));
+    --green-soft: rgb(104 191 126 / .16);
+    --green-tint: rgb(104 191 126 / .1);
+    --green-glow: rgb(104 191 126 / .3);
+    --green-bright: #8AD9A4;
+
+    --amber:      rgb(var(--amber-rgb));
+    --amber-soft: rgb(237 178 74 / .16);
+    --red:        rgb(var(--red-rgb));
+    --red-soft:   rgb(240 106 96 / .16);
+    --blue:       rgb(var(--blue-rgb));
+    --blue-soft:  rgb(109 168 240 / .16);
+
+    /* The health ring's unfilled track. */
+    --ring-track: rgb(255 255 255 / .13);
+
+    --r-sm: 16px;
+    --r:    20px;
+    --r-lg: 28px;
+
+    --sh:    0 2px 12px -2px rgba(27, 67, 50, .08), 0 1px 3px rgba(27, 67, 50, .04);
+    --sh-lg: 0 14px 40px -12px rgba(27, 67, 50, .18);
+    --sh-card: 0 4px 16px -4px rgba(27, 67, 50, .10);
+  }
+
+  html, body, #root { height: 100%; }
+
+  /* The app is committed to dark. Saying so gets native controls — checkbox
+     ticks, date pickers, the range track — rendered against a dark palette
+     instead of a white one punched into the page. */
+  :root { color-scheme: dark; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .tnum { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  button, a[role='button'], .touch { min-height: 44px; }
+  :focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 10px; }
+  ::-webkit-scrollbar { width: 0; height: 0; }
+}
+
+@layer components {
+  /* ---- type ---------------------------------------------------------- */
+  .d-xl { font-family: 'Manrope', sans-serif; font-size: 1.75rem; font-weight: 800; letter-spacing: -.03em;  line-height: 1.1; }
+  .d-lg { font-family: 'Manrope', sans-serif; font-size: 1.35rem; font-weight: 800; letter-spacing: -.025em; line-height: 1.15; }
+  .d-md { font-family: 'Manrope', sans-serif; font-size: 1.05rem; font-weight: 700; letter-spacing: -.015em; }
+  .d-sm { font-family: 'Manrope', sans-serif; font-size: .93rem;  font-weight: 700; letter-spacing: -.01em; }
+
+  .t-body  { font-size: .92rem; font-weight: 500; line-height: 1.5; }
+  .t-meta  { font-size: .8rem;  font-weight: 500; color: var(--text-dim); }
+  .t-label { font-size: .66rem; font-weight: 700; letter-spacing: .09em;
+             text-transform: uppercase; color: var(--text-faint); }
+
+  /* ---- surfaces ------------------------------------------------------ */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--r);
+    box-shadow: var(--sh);
+    padding: 1rem;
+  }
+  .card-lit {
+    transition: box-shadow .2s ease, transform .2s ease;
+  }
+  .card-lit:hover {
+    box-shadow: var(--sh-card);
+  }
+  .tile { background: var(--card-2); border-radius: var(--r-sm); }
+
+  /* ---- buttons ------------------------------------------------------- */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2;
+    border-radius: 14px; padding-inline: 1.15rem; min-height: 48px;
+    font-family: 'Manrope', sans-serif; font-size: .93rem; font-weight: 700;
+    letter-spacing: -.01em;
+    transition: transform .12s ease, filter .18s ease, background-color .18s ease;
+  }
+  .btn:active { transform: scale(.975); }
+  .btn-primary { background: var(--green); color: #fff; box-shadow: 0 4px 14px -3px rgba(45,106,79,.45); }
+  .btn-primary:hover { filter: brightness(1.06); }
+  .btn-ghost   { background: var(--card); color: var(--text); border: 1px solid var(--line); }
+  .btn-soft    { background: var(--green-soft); color: var(--green-deep); }
+  .btn-danger  { background: var(--red); color: #fff; box-shadow: 0 4px 12px -3px rgba(214,40,40,.4); }
+
+  /* ---- status pill --------------------------------------------------- */
+  .pill {
+    @apply inline-flex items-center gap-1.5;
+    border-radius: 999px; padding: .24rem .6rem;
+    font-size: .7rem; font-weight: 700;
+  }
+  .pill::before { content: ""; width: .38rem; height: .38rem; border-radius: 999px;
+                  background: currentColor; flex: none; }
+
+  .avatar {
+    @apply grid place-items-center shrink-0 overflow-hidden;
+    width: 3rem; height: 3rem; border-radius: 999px;
+    background: var(--green-soft); border: 2px solid var(--green-glow);
+    font-family: 'Manrope', sans-serif; font-weight: 800; color: var(--green);
+  }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* App bar shared by every pushed screen. */
+  .appbar {
+    @apply flex items-center gap-3;
+    padding: .9rem 1rem; background: var(--card);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .icon-btn {
+    @apply grid place-items-center shrink-0;
+    width: 40px; height: 40px; min-height: 40px; border-radius: 12px;
+    background: var(--card-2); color: var(--text);
+  }
+
+  /* ---- FARMO stat cards (home screen) -------------------------------- */
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--r);
+    box-shadow: var(--sh);
+    padding: .9rem .7rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .25rem;
+  }
+  /* Bare glyph, no chip. A 36px tinted square around each icon turned the row
+     of four into a row of buttons; the reference reads as four pictograms. */
+  .stat-card .stat-icon {
+    height: 28px;
+    display: grid; place-items: center;
+    margin-bottom: .1rem;
+  }
+  .stat-card .stat-value {
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.4rem; font-weight: 800;
+    color: var(--text);
+    line-height: 1.1;
+  }
+  .stat-card .stat-label {
+    font-size: .64rem; font-weight: 600;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  /* ---- animal grid (2-column) --------------------------------------- */
+  .animal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .75rem;
+  }
+  .animal-grid-card {
+    background: var(--card);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--r);
+    box-shadow: var(--sh);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .animal-grid-card:active { transform: scale(.97); }
+  .animal-grid-card .animal-photo {
+    width: 100%; aspect-ratio: 1; object-fit: cover;
+    background: var(--green-soft);
+  }
+  .animal-grid-card .animal-info {
+    padding: .6rem .7rem;
+  }
+  .animal-grid-card .animal-name {
+    font-family: 'Manrope', sans-serif;
+    font-size: .88rem; font-weight: 700;
+    color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .animal-grid-card .animal-tag {
+    font-size: .72rem; color: var(--text-dim);
+    margin-top: .1rem;
+  }
+
+  /* ---- profile menu rows -------------------------------------------- */
+  .profile-row {
+    display: flex; align-items: center; gap: .85rem;
+    padding: .85rem 1rem;
+    background: var(--card);
+    border-bottom: 1px solid var(--line-soft);
+    text-decoration: none; color: var(--text);
+    transition: background .15s ease;
+  }
+  .profile-row:first-child { border-radius: var(--r) var(--r) 0 0; }
+  .profile-row:last-child { border-radius: 0 0 var(--r) var(--r); border-bottom: none; }
+  .profile-row:only-child { border-radius: var(--r); }
+  .profile-row:active { background: var(--card-2); }
+  .profile-row .row-icon {
+    width: 38px; height: 38px; border-radius: 12px;
+    display: grid; place-items: center;
+    background: var(--green-soft); color: var(--green);
+    flex-shrink: 0;
+  }
+  .profile-row .row-text { flex: 1; min-width: 0; }
+  .profile-row .row-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: .92rem; font-weight: 600; color: var(--text);
+  }
+  .profile-row .row-sub {
+    font-size: .78rem; color: var(--text-dim); margin-top: .1rem;
+  }
+}
+
+/* ============================================================================
+   Status variants — OUTSIDE @layer on purpose.
+   ============================================================================ */
+.pill-safe   { color: var(--green); background: var(--green-soft); }
+.pill-warn   { color: var(--amber);  background: var(--amber-soft); }
+.pill-danger { color: var(--red);    background: var(--red-soft); }
+.pill-danger::before { border-radius: 2px; }
+
+.txt-safe   { color: var(--green); }
+.txt-warn   { color: var(--amber); }
+.txt-danger { color: var(--red); }
+
+.bg-safe-soft   { background: var(--green-soft); }
+.bg-warn-soft   { background: var(--amber-soft); }
+.bg-danger-soft { background: var(--red-soft); }
+.bg-info-soft   { background: var(--blue-soft); }
+
+.edge-safe   { border-left: 3px solid var(--green-bright); }
+.edge-warn   { border-left: 3px solid var(--amber); }
+.edge-danger { border-left: 3px solid var(--red); }
+
+/* ============================================================================
+   The stage — phone frame on desktop
+   ============================================================================ */
+.app-stage { height: 100%; background: var(--bg); }
+.app-frame { height: 100%; }
+
+@media (min-width: 760px) {
+  .app-stage {
+    display: grid; place-items: center; padding: 2rem;
+    background: radial-gradient(120% 90% at 50% 0%, #1E1A16 0%, #0B0A09 60%, #060605 100%);
+  }
+  .app-frame {
+    width: 100%; max-width: 25.5rem; height: min(100%, 53rem);
+    border-radius: 34px; overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: var(--sh-lg), 0 0 0 1px rgba(27,67,50,.08);
+  }
+}
+
+/* ---- side drawer -------------------------------------------------------
+   Absolute, not fixed: on a desktop the app lives inside a 25.5rem phone
+   frame, and a fixed drawer would slide across the whole 1600px browser
+   window instead of across the phone.
+   Kept out of @layer so the [data-open] state cannot be purged.          */
+.drawer-scrim {
+  position: absolute; inset: 0; z-index: 1200;
+  background: rgba(12, 32, 18, .42);
+  opacity: 0; pointer-events: none;
+  transition: opacity .22s ease;
+}
+.drawer-scrim[data-open] { opacity: 1; pointer-events: auto; }
+
+.drawer {
+  position: absolute; top: 0; bottom: 0; left: 0; z-index: 1201;
+  width: min(19rem, 84%);
+  background: var(--card);
+  border-right: 1px solid var(--line-soft);
+  box-shadow: 6px 0 26px -10px rgba(12, 32, 18, .3);
+  overflow-y: auto;
+  transform: translateX(-102%);
+  transition: transform .26s cubic-bezier(.16, 1, .3, 1);
+}
+.drawer[data-open] { transform: none; }
+/* Closed drawer must not be tabbable — aria-hidden alone does not stop it. */
+.drawer:not([data-open]) { visibility: hidden; }
+
+.drawer-row {
+  display: flex; align-items: center; gap: .8rem;
+  padding: .7rem .8rem; border-radius: var(--r-sm);
+  color: var(--text); text-decoration: none;
+  transition: background .15s ease;
+}
+.drawer-row:active { background: var(--card-2); }
+.drawer-row .row-icon {
+  width: 38px; height: 38px; border-radius: 12px;
+  display: grid; place-items: center; flex-shrink: 0;
+  background: var(--green-soft); color: var(--green);
+}
+.drawer-row .row-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: .92rem; font-weight: 600; color: var(--text);
+}
+.drawer-row .row-sub { font-size: .74rem; color: var(--text-dim); }
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer, .drawer-scrim { transition: none; }
+}
+
+/* Leaflet. */
+.leaflet-container { background: #DDE6DC; font-family: inherit; }
+.leaflet-control-attribution {
+  font-size: 10px !important;
+  background: rgba(255,255,255,.85) !important;
+  color: #52796F !important;
+}
+.leaflet-control-attribution a { color: var(--green) !important; }
+
+/* Remove default divIcon box styling for cow markers */
+.cow-pin { background: none !important; border: none !important; }
+
+/* ---- motion ----------------------------------------------------------- */
+@keyframes rise { from { opacity: 0; transform: translateY(9px) } to { opacity: 1; transform: none } }
+.rise { animation: rise .32s cubic-bezier(.16,1,.3,1) both; }
+.rise-2 { animation-delay: .05s } .rise-3 { animation-delay: .1s } .rise-4 { animation-delay: .15s }
+
+@keyframes breathe { 0%,100% { opacity: .45 } 50% { opacity: 1 } }
+.live-dot {
+  width: 7px; height: 7px; border-radius: 999px;
+  background: currentColor; flex: none;
+  animation: breathe 1.6s ease-in-out infinite;
+}
+
+@keyframes sweep { to { transform: translateX(100%) } }
+.skeleton { position: relative; overflow: hidden; background: var(--card-2); border-radius: var(--r); }
+.skeleton::after {
+  content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(27,67,50,.06), transparent);
+  animation: sweep 1.4s infinite;
+}
+
+@keyframes pulse-green {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(45,106,79,.4); }
+  50% { box-shadow: 0 0 0 8px rgba(45,106,79,0); }
+}
+.pulse-green { animation: pulse-green 2s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* Two-line clamp. Outside @layer: used on runtime-composed cards. */
+.clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ---- road name labels --------------------------------------------------
+   Drawn straight onto the imagery like map lettering, not in a popup box.
+   The marker itself is a zero-size anchor, so the span is centred on the
+   road with a transform. Outside @layer: Leaflet creates these nodes at
+   runtime, so Tailwind's scanner never sees the class names.            */
+.road-label-icon { background: none !important; border: none !important; }
+.road-label-text {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  color: #FFFFFF;
+  font: 800 11px/1 'Manrope', system-ui, sans-serif;
+  letter-spacing: .03em;
+  /* Reads on dark tarmac and on pale fields without a plate behind it. */
+  text-shadow:
+     0 0 3px rgba(24,10,10,.95),  0 1px 2px rgba(24,10,10,.9),
+     0 -1px 2px rgba(24,10,10,.9), 1px 0 2px rgba(24,10,10,.9),
+    -1px 0 2px rgba(24,10,10,.9);
+}
+
+/* ---- range slider ------------------------------------------------------
+   The fence-radius control. Chrome draws a native range track in a dark
+   charcoal that reads as "disabled" inside a white card, and `accent-color`
+   only tints the filled half — so the track is drawn here instead, with the
+   fill as a gradient stop driven by the --pct custom property the component
+   sets. Outside @layer so the pseudo-element rules cannot be purged.       */
+input[type="range"].range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 44px;              /* keeps the 44px touch target */
+  background: transparent;
+  cursor: pointer;
+}
+input[type="range"].range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right,
+    var(--green) 0 var(--pct, 50%), var(--line) var(--pct, 50%) 100%);
+}
+input[type="range"].range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px; height: 22px;
+  margin-top: -8px;          /* centres the thumb on a 6px track */
+  border-radius: 999px;
+  background: var(--green);
+  border: 3px solid #fff;
+  box-shadow: 0 1px 5px rgba(27, 67, 50, .38);
+}
+input[type="range"].range::-moz-range-track {
+  height: 6px; border-radius: 999px; background: var(--line);
+}
+input[type="range"].range::-moz-range-progress {
+  height: 6px; border-radius: 999px; background: var(--green);
+}
+input[type="range"].range::-moz-range-thumb {
+  width: 22px; height: 22px; border-radius: 999px;
+  background: var(--green); border: 3px solid #fff;
+  box-shadow: 0 1px 5px rgba(27, 67, 50, .38);
+}
+input[type="range"].range:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--green); outline-offset: 2px;
+}
+
+/* ---- intro -------------------------------------------------------------
+   Opacity and transform only. The first version animated letter-spacing on
+   the wordmark and width on the rule; both are layout properties, so every
+   frame re-ran layout for the whole screen and the title visibly stuttered
+   as it appeared. scaleX and opacity run on the compositor.               */
+@keyframes introFade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes introRule { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+
+/* Everything finishes before the 2.4s hold ends, so nothing is still
+   animating when the dissolve starts — an animation cut off mid-stroke
+   reads as a stutter, not a transition. */
+.intro-word { animation: introFade .7s ease both .15s; will-change: opacity; }
+.intro-sub  { animation: introFade .6s ease both .65s; will-change: opacity; }
+.intro-rule {
+  display: block; height: 1.5px; width: 84px; margin-top: 1.15rem;
+  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.85), rgba(255,255,255,0));
+  transform-origin: 50% 50%;
+  animation: introRule 1.15s cubic-bezier(.2,.7,.3,1) both .9s;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-word, .intro-sub { animation: introFade .4s ease both; }
+  .intro-rule { animation: none; }
+}
+
+/* ---- home: the sea-storm backdrop --------------------------------------
+   The dashboard scrolls over the same frame the intro ends on, and it
+   dissolves as you go.
+
+   SEAMLESS RULES, learned the hard way:
+
+   1. --photo drives exactly ONE property on ONE element: the opacity of the
+      backdrop layer. It is written on every scroll frame, so anything else
+      reading it would force a style recalculation of that element on every
+      frame too. An earlier version had the cards computing
+      `backdrop-filter: blur(calc(var(--photo) * 16px))` per frame, which is
+      about the most expensive thing you can ask a compositor to redo sixty
+      times a second — the whole page juddered while scrolling.
+
+   2. Nothing moves. No parallax translate on the image, no scale on the
+      intro's exit. A drift looks intentional in a mockup and reads as a
+      glitch on a phone, and it also guarantees the intro's last frame and
+      the dashboard's first frame do not line up.
+
+   3. The backdrop is framed IDENTICALLY to the intro (cover, 50% 50%, no
+      transform), so when the intro fades out the image underneath it is
+      pixel-for-pixel the same. The cut is invisible: the wordmark and the
+      scrim dissolve, the photograph stays put.                            */
+/*
+ * Home runs on a dark palette while the storm is behind it.
+ *
+ * This is done by re-pointing the palette CHANNELS inside .home-photo rather
+ * than restyling each surface. index.css defines --text as rgb(var(--text-rgb))
+ * and tailwind.config.js reads the same channels, so overriding the -rgb
+ * variables here flips every existing `var(--text)`, every inline
+ * `background: var(--card)` and every Tailwind `text-dim` on this screen at
+ * once — including the ones written as inline styles, which no descendant
+ * selector could have reached.
+ */
+.home-photo {
+  --photo: 1;
+  /* The dashboard's cards are glass over the photograph rather than the
+     solid panels the rest of the app uses. Everything else — ink, accents,
+     ground — is now the app-wide palette, so only these two shift here. */
+  --card:   rgb(30 26 22 / .46);
+  --card-2: rgb(255 255 255 / .07);
+}
+
+.home-photo-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  opacity: var(--photo);
+  /* Promote to its own layer so changing opacity never repaints the
+     dashboard sitting on top of it. */
+  will-change: opacity;
+}
+/*
+ * Taller than its container, anchored at the top.
+ *
+ * The source is 4:3 and the frame is a tall phone, so `cover` already fits the
+ * full image height and crops only the sides — which means object-position's
+ * Y value does nothing at all here. Overflowing the box vertically is the only
+ * way to move the composition, and anchoring at the top carries the shaft of
+ * light all the way down the dashboard — at 108% the boat and its pool of
+ * light land near the bottom of the content area, just above the tab bar,
+ * so the beam runs the full page instead of stopping mid-screen.
+ */
+.home-photo-layer img {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: auto;
+  width: 100%;
+  height: 108%;
+  object-fit: cover;
+  object-position: 50% 0%;
+}
+/*
+ * One long, slow fade from the top of the page to the bottom.
+ *
+ * Every earlier version was a plateau followed by a ramp: fully clear for the
+ * top half, then a fast wash that landed on flat page colour partway down.
+ * That read as two different backgrounds stacked on each other rather than
+ * one photograph gradually giving way, and it cut the shaft of light off in
+ * the middle of the screen.
+ *
+ * Now it is a continuous curve onto the dark ground, so it never fully
+ * reaches opaque inside the viewport. Scrolling is what removes it entirely.
+ */
+.home-photo-scrim {
+  position: absolute;
+  inset: 0;
+  /* Tops out well short of opaque so the bottom of the page is still the
+     photograph, dimmed — not a black band where the picture ran out. */
+  background: linear-gradient(
+    180deg,
+    rgb(var(--bg-rgb) / 0)    0%,
+    rgb(var(--bg-rgb) / .03) 30%,
+    rgb(var(--bg-rgb) / .10) 52%,
+    rgb(var(--bg-rgb) / .22) 70%,
+    rgb(var(--bg-rgb) / .34) 86%,
+    rgb(var(--bg-rgb) / .42) 100%
+  );
+}
+.home-photo-scroll { position: relative; z-index: 1; }
+
+/* ---- home header ---- */
+.home-head .home-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgb(var(--amber-rgb) / .9);
+  text-shadow: 0 1px 10px rgb(6 8 11 / .8);
+}
+.home-head .home-line {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.62rem;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.18;
+  color: rgb(var(--text-rgb));
+  text-shadow: 0 2px 20px rgb(6 8 11 / .72);
+}
+/* The half of the sentence that reports the state — the only part that
+   changes, so it is the only part that is coloured. */
+.home-head .home-state { color: rgb(var(--amber-rgb)); }
+.home-head .home-state[data-tone="safe"]   { color: rgb(var(--green-rgb)); }
+.home-head .home-state[data-tone="danger"] { color: rgb(var(--red-rgb)); }
+
+/* Icon buttons: glass discs, so they read on the bright shaft as well as on
+   the dark cloud either side of it. */
+.home-head .glass-btn {
+  display: grid;
+  place-items: center;
+  width: 44px; height: 44px;
+  min-height: 0;
+  border-radius: 15px;
+  color: rgb(var(--text-rgb));
+  background: rgb(28 24 20 / .42);
+  border: 1px solid rgb(255 255 255 / .14);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow: 0 8px 24px -12px rgb(0 0 0 / .8);
+}
+
+/* ---- home surfaces ----
+   Smoked glass. Translucent enough that the shaft of light glows through
+   the panel, dark enough that light type on it never drops below a
+   comfortable contrast even where the photograph is at its brightest.
+   Fixed values: --photo drives only the backdrop's opacity, so scrolling
+   never re-computes a blur. */
+.home-photo .card,
+.home-photo .stat-card {
+  background: rgb(26 22 19 / .46);
+  -webkit-backdrop-filter: blur(22px) saturate(1.35);
+  backdrop-filter: blur(22px) saturate(1.35);
+  border: 1px solid rgb(255 255 255 / .13);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / .1),
+    0 20px 50px -24px rgb(0 0 0 / .85);
+}
+.home-photo .card-lit:hover { box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / .14),
+    0 24px 56px -24px rgb(0 0 0 / .9); }
+
+.home-photo .stat-card .stat-value { color: rgb(var(--text-rgb)); }
+.home-photo .stat-card .stat-label { color: rgb(var(--text-dim-rgb)); }
+
+/* Section headings sit directly on the photograph. */
+.home-photo h2.d-sm {
+  color: rgb(var(--text-rgb));
+  text-shadow: 0 2px 16px rgb(6 8 11 / .8);
+}
+
+/* The intro overlays the running app so the dashboard can boot behind it.
+   Above everything including the danger takeover (z 3000) — during launch
+   there is nothing to interrupt yet. */
+.intro-over { position: fixed; inset: 0; z-index: 4000; }
+
+/* The health card's leaf sprig was drawn for a white card. On smoked glass
+   its mint hills turn into a dark green slab, so it is dropped to a whisper
+   and lit rather than filled — decoration must never compete with the score
+   sitting next to it. */
+.home-photo .home-leaves { opacity: .16; mix-blend-mode: screen; }
+
+/* The tab bar belongs to the shell, not the screen, so it stays light while
+   Home is dark and produced a hard white band under the storm. On Home only
+   it becomes the same smoked glass as the cards. */
+.tabbar-dark {
+  /* Translucent only on Home, where there is a photograph to show through. */
+  background: rgb(18 15 13 / .8) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(1.3);
+  backdrop-filter: blur(22px) saturate(1.3);
+}

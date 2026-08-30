@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>PaashuGuard — Collar Telemetry</title>
+
+<style>
+
+:root {
+  --bg: #070a0f;
+  --panel: #0d121a;
+  --panel2: #111823;
+  --border: #202a36;
+  --muted: #7f8b9a;
+  --text: #edf3f8;
+  --green: #37e38d;
+  --yellow: #f5c451;
+  --red: #ff5f71;
+  --blue: #4ea7ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(78,167,255,.08),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at bottom left,
+      rgba(55,227,141,.05),
+      transparent 30%
+    ),
+    var(--bg);
+
+  color: var(--text);
+
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.header {
+  height: 76px;
+
+  padding:
+    0 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom:
+    1px solid var(--border);
+
+  background:
+    rgba(7,10,15,.88);
+
+  backdrop-filter:
+    blur(18px);
+
+  position: sticky;
+  top: 0;
+
+  z-index: 10;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo {
+  width: 38px;
+  height: 38px;
+
+  border-radius: 11px;
+
+  display: grid;
+  place-items: center;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2ce294,
+      #1c8bff
+    );
+
+  color: #061019;
+  font-weight: 900;
+}
+
+.brand-title {
+  font-size: 18px;
+  font-weight: 750;
+}
+
+.brand-subtitle {
+  font-size: 12px;
+  color: var(--muted);
+
+  margin-top: 2px;
+}
+
+.header-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.pill {
+  padding:
+    7px 12px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 999px;
+
+  background:
+    rgba(255,255,255,.025);
+
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.live-pill {
+  color: var(--green);
+
+  border-color:
+    rgba(55,227,141,.25);
+
+  background:
+    rgba(55,227,141,.06);
+}
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.main {
+  max-width: 1450px;
+
+  margin:
+    0 auto;
+
+  padding:
+    28px 32px 50px;
+}
+
+/* =========================================================
+   TOP STATUS
+   ========================================================= */
+
+.hero {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
+
+  gap: 18px;
+
+  margin-bottom: 20px;
+}
+
+.hero-panel {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.035),
+      rgba(255,255,255,.015)
+    );
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 18px;
+
+  padding: 22px;
+
+  box-shadow:
+    0 14px 45px
+    rgba(0,0,0,.20);
+}
+
+.hero-label {
+  color: var(--muted);
+
+  font-size: 11px;
+
+  text-transform: uppercase;
+
+  letter-spacing:
+    .13em;
+}
+
+.hero-title {
+  font-size: 28px;
+
+  font-weight: 780;
+
+  margin-top: 5px;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  margin-top: 14px;
+}
+
+.last-update {
+  min-width: 260px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  text-align: right;
+}
+
+.update-value {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(12, 1fr);
+
+  gap: 16px;
+}
+
+.card {
+  grid-column:
+    span 4;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(17,24,35,.95),
+      rgba(12,17,25,.95)
+    );
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 16px;
+
+  padding: 20px;
+
+  box-shadow:
+    0 10px 35px
+    rgba(0,0,0,.16);
+}
+
+.card.wide {
+  grid-column:
+    span 8;
+}
+
+.card.full {
+  grid-column:
+    span 12;
+}
+
+.card-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 18px;
+}
+
+.card-title {
+  color: var(--muted);
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing:
+    .13em;
+}
+
+.card-badge {
+  font-size: 11px;
+
+  color: var(--blue);
+
+  padding:
+    5px 9px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(78,167,255,.08);
+
+  border:
+    1px solid
+    rgba(78,167,255,.18);
+}
+
+/* =========================================================
+   VALUES
+   ========================================================= */
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.row {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding:
+    10px 0;
+
+  border-bottom:
+    1px solid
+    rgba(255,255,255,.045);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.label {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.value {
+  color: var(--text);
+
+  font-size: 14px;
+
+  font-weight: 650;
+
+  font-variant-numeric:
+    tabular-nums;
+}
+
+/* =========================================================
+   RISK
+   ========================================================= */
+
+.risk-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.risk-number {
+  font-size: 58px;
+
+  line-height: 1;
+
+  letter-spacing:
+    -.045em;
+
+  font-weight: 850;
+
+  margin:
+    12px 0 7px;
+}
+
+.risk-label {
+  color: var(--muted);
+
+  font-size: 12px;
+}
+
+.risk-bar {
+  width: 100%;
+
+  height: 7px;
+
+  margin-top: 18px;
+
+  background:
+    #19212b;
+
+  border-radius:
+    99px;
+
+  overflow: hidden;
+}
+
+.risk-fill {
+  height: 100%;
+
+  width: 0%;
+
+  border-radius:
+    inherit;
+
+  transition:
+    width .35s ease,
+    background .35s ease;
+
+  background:
+    var(--green);
+}
+
+.status-line {
+  display: flex;
+
+  justify-content:
+    space-between;
+
+  align-items: center;
+
+  margin-top: 16px;
+}
+
+.status-text {
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.safe {
+  color: var(--green);
+}
+
+.warn {
+  color: var(--yellow);
+}
+
+.danger {
+  color: var(--red);
+}
+
+/* =========================================================
+   BIG DECISION
+   ========================================================= */
+
+.decision {
+  min-height: 215px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content:
+    space-between;
+}
+
+.decision-value {
+  font-size: 32px;
+
+  font-weight: 800;
+
+  margin-top: 10px;
+}
+
+.decision-description {
+  color: var(--muted);
+
+  font-size: 13px;
+
+  margin-top: 8px;
+
+  line-height: 1.6;
+}
+
+.actuators {
+  display: flex;
+
+  gap: 10px;
+
+  margin-top: 18px;
+}
+
+.actuator {
+  flex: 1;
+
+  padding: 11px;
+
+  border-radius: 12px;
+
+  text-align: center;
+
+  border:
+    1px solid var(--border);
+
+  background:
+    rgba(255,255,255,.02);
+}
+
+.actuator-name {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.actuator-value {
+  margin-top: 4px;
+
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/* =========================================================
+   EVENT
+   ========================================================= */
+
+.event-box {
+  padding:
+    14px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 12px;
+
+  background:
+    rgba(255,255,255,.02);
+}
+
+.event-type {
+  font-size: 16px;
+  font-weight: 750;
+}
+
+.event-time {
+  color: var(--muted);
+
+  font-size: 12px;
+
+  margin-top: 5px;
+}
+
+/* =========================================================
+   TELEMETRY STREAM
+   ========================================================= */
+
+.stream {
+  max-height:
+    330px;
+
+  overflow:
+    auto;
+
+  font-family:
+    "SFMono-Regular",
+    "JetBrains Mono",
+    monospace;
+
+  font-size:
+    12px;
+
+  line-height:
+    1.75;
+
+  color:
+    #b8c5d3;
+
+  scrollbar-width:
+    thin;
+}
+
+.stream-line {
+  padding:
+    6px 8px;
+
+  border-bottom:
+    1px solid
+    rgba(255,255,255,.035);
+}
+
+.stream-line:hover {
+  background:
+    rgba(255,255,255,.025);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (
+  max-width: 980px
+) {
+
+  .hero {
+    grid-template-columns:
+      1fr;
+  }
+
+  .last-update {
+    min-width: 0;
+
+    text-align: left;
+  }
+
+  .card,
+  .card.wide {
+    grid-column:
+      span 6;
+  }
+}
+
+@media (
+  max-width: 680px
+) {
+
+  .header {
+    padding: 0 16px;
+  }
+
+  .main {
+    padding:
+      20px 16px 40px;
+  }
+
+  .header-right {
+    display: none;
+  }
+
+  .card,
+  .card.wide,
+  .card.full {
+    grid-column:
+      span 12;
+  }
+
+  .hero-title {
+    font-size: 23px;
+  }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =======================================================
+     HEADER
+======================================================== -->
+
+<header class="header">
+
+  <div class="brand">
+
+    <div class="logo">
+      PG
+    </div>
+
+    <div>
+
+      <div class="brand-title">
+        PaashuGuard
+      </div>
+
+      <div class="brand-subtitle">
+        Live Collar Intelligence
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="header-right">
+
+    <div
+      class="pill"
+      id="gatewayStatus"
+    >
+      Gateway — Connecting
+    </div>
+
+    <div
+      class="pill live-pill"
+      id="liveStatus"
+    >
+      ● CONNECTING...
+    </div>
+
+    <button
+      class="pill"
+      style="cursor: pointer; background: rgba(255,255,255,.05); border: 1px solid var(--border);"
+      onclick="fetch('/sync', {method: 'POST'}).then(() => alert('Gateway is now syncing with the cloud...'))"
+    >
+      <svg style="width: 12px; height: 12px; display: inline-block; vertical-align: middle; margin-right: 4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+      Sync Cloud
+    </button>
+
+  </div>
+
+</header>
+
+
+<!-- =======================================================
+     MAIN
+======================================================== -->
+
+<main class="main">
+
+
+  <!-- HERO -->
+
+  <section class="hero">
+
+    <div class="hero-panel">
+
+      <div class="hero-label">
+        Active collar
+      </div>
+
+      <div class="hero-title" id="collarId">
+        Loading…
+      </div>
+
+      <div class="hero-meta">
+
+        <div class="pill">
+          GSM / LTE
+        </div>
+
+        <div class="pill">
+          Cloud uplink
+        </div>
+
+        <div
+          class="pill"
+          id="collarStatus"
+        >
+          ● Waiting for collar
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="hero-panel last-update">
+
+      <div class="hero-label">
+        Last telemetry
+      </div>
+
+      <div
+        class="update-value"
+        id="lastUpdate"
+      >
+        Waiting...
+      </div>
+
+      <div
+        class="hero-label"
+        style="margin-top:7px"
+      >
+        Packet sequence
+      </div>
+
+      <div
+        class="update-value"
+        id="sequence"
+      >
+        —
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- GRID -->
+
+  <section class="grid">
+
+
+    <!-- GPS -->
+
+    <div class="card">
+
+      <div class="card-header">
+
+        <div class="card-title">
+          GPS Position
+        </div>
+
+        <div class="card-badge">
+          LIVE
+        </div>
+
+      </div>
+
+      <div class="rows">
+
+        <div class="row">
+
+          <span class="label">
+            Latitude
+          </span>
+
+          <span
+            class="value"
+            id="lat"
+          >
+            —
+          </span>
+
+        </div>
+
+        <div class="row">
+
+          <span class="label">
+            Longitude
+          </span>
+
+          <span
+            class="value"
+            id="lon"
+          >
+            —
+          </span>
+
+        </div>
+
+        <div class="row">
+
+          <span class="label">
+            Satellites
+          </span>
+
+          <span
+            class="value"
+            id="sat"
+          >
+            —
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- MOTION -->
+
+    <div class="card">
+
+      <div class="card-header">
+
+        <div class="card-title">
+          Motion
+        </div>
+
+        <div class="card-badge">
+          IMU + GPS
+        </div>
+
+      </div>
+
+      <div class="rows">
+
+        <div class="row">
+
+          <span class="label">
+            Speed
+          </span>
+
+          <span
+            class="value"
+            id="speed"
+          >
+            —
+          </span>
+
+        </div>
+
+        <div class="row">
+
+          <span class="label">
+            Heading
+          </span>
+
+          <span
+            class="value"
+            id="heading"
+          >
+            —
+          </span>
+
+        </div>
+
+        <div class="row">
+
+          <span class="label">
+            Acceleration
+          </span>
+
+          <span
+            class="value"
+            id="accel"
+          >
+            —
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- SPATIAL -->
+
+    <div class="card">
+
+      <div class="card-header">
+
+        <div class="card-title">
+          Spatial Analysis
+        </div>
+
+        <div class="card-badge">
+          ENGINE INPUT
+        </div>
+
+      </div>
+
+      <div class="rows">
+
+        <div class="row">
+
+          <span class="label">
+            Boundary distance
+          </span>
+
+          <span
+            class="value"
+            id="boundary"
+          >
+            —
+          </span>
+
+        </div>
+
+        <div class="row">
+
+          <span class="label">
+            Nearest road
+          </span>
+
+          <span
+            class="value"
+            id="road"
+          >
+            —
+          </span>
+
+        </div>
+
+        <div class="row">
+
+          <span class="label">
+            Geofence
+          </span>
+
+          <span
+            class="value"
+            id="geofence"
+          >
+            Not configured
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+    
+    <!-- DETAILED DISTANCE BREAKDOWN -->
+    <div class="card wide" id="distance-breakdown-card" style="display: none;">
+      <div class="card-header">
+        <div class="card-title">Detailed Distance Breakdown</div>
+        <div class="card-badge">LIVE CALCULATION</div>
+      </div>
+      
+      <div style="font-size: 13px; font-weight: 600; color: #8a9bb3; padding: 12px 16px 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+        Sides (Fence Lines)
+      </div>
+      <div class="rows" id="distance-sides-list">
+        <!-- Injected via JS -->
+      </div>
+
+      <div style="font-size: 13px; font-weight: 600; color: #8a9bb3; padding: 16px 16px 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+        Corners (Points)
+      </div>
+      <div class="rows" id="distance-corners-list">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+
+    <!-- RISK -->
+
+    <div class="card risk-card wide">
+
+      <div class="card-header">
+
+        <div class="card-title">
+          Local Prediction Engine
+        </div>
+
+        <div class="card-badge">
+          RUNNING ON COLLAR
+        </div>
+
+      </div>
+
+      <div
+        class="risk-number"
+        id="risk"
+      >
+        —
+      </div>
+
+      <div class="risk-label">
+        Current risk score
+      </div>
+
+      <div class="risk-bar">
+
+        <div
+          class="risk-fill"
+          id="riskFill"
+        ></div>
+
+      </div>
+
+      <div class="status-line">
+
+        <div>
+
+          <div
+            class="hero-label"
+            style="margin-bottom:4px"
+          >
+            State
+          </div>
+
+          <div
+            class="status-text"
+            id="state"
+          >
+            WAITING
+          </div>
+
+        </div>
+
+
+        <div style="text-align:right">
+
+          <div
+            class="hero-label"
+            style="margin-bottom:4px"
+          >
+            Risk type
+          </div>
+
+          <div
+            class="status-text"
+            id="type"
+          >
+            NO_GPS
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- DECISION -->
+
+    <div class="card decision">
+
+      <div>
+
+        <div class="card-header">
+
+          <div class="card-title">
+            Collar Decision
+          </div>
+
+          <div class="card-badge">
+            LOCAL
+          </div>
+
+        </div>
+
+        <div
+          class="decision-value"
+          id="action"
+        >
+          NONE
+        </div>
+
+        <div
+          class="decision-description"
+          id="decisionText"
+        >
+          No immediate action.
+        </div>
+
+      </div>
+
+
+      <div class="actuators">
+
+        <div class="actuator">
+
+          <div class="actuator-name">
+            BUZZER
+          </div>
+
+          <div
+            class="actuator-value"
+            id="buzzer"
+          >
+            OFF
+          </div>
+
+        </div>
+
+
+        <div class="actuator">
+
+          <div class="actuator-name">
+            VIBRATION
+          </div>
+
+          <div
+            class="actuator-value"
+            id="vibration"
+          >
+            OFF
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- EVENT -->
+
+    <div class="card">
+
+      <div class="card-header">
+
+        <div class="card-title">
+          Latest Event
+        </div>
+
+        <div class="card-badge">
+          EVENT
+        </div>
+
+      </div>
+
+      <div class="event-box">
+
+        <div
+          class="event-type"
+          id="event"
+        >
+          NONE
+        </div>
+
+        <div
+          class="event-time"
+          id="eventTime"
+        >
+          No event received.
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- SIGNAL -->
+
+    <div class="card">
+
+      <div class="card-header">
+
+        <div class="card-title">
+          LoRa Link
+        </div>
+
+        <div class="card-badge">
+          GSM
+        </div>
+
+      </div>
+
+      <div class="rows">
+
+        <div class="row">
+
+          <span class="label">
+            RSSI
+          </span>
+
+          <span
+            class="value"
+            id="rssi"
+          >
+            —
+          </span>
+
+        </div>
+
+        <div class="row">
+
+          <span class="label">
+            SNR
+          </span>
+
+          <span
+            class="value"
+            id="snr"
+          >
+            —
+          </span>
+
+        </div>
+
+        <div class="row">
+
+          <span class="label">
+            Update rate
+          </span>
+
+          <span
+            class="value"
+          >
+            <span id="rate">—</span>
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- RAW STREAM -->
+
+    <div class="card full">
+
+      <div class="card-header">
+
+        <div class="card-title">
+          Live Telemetry Stream
+        </div>
+
+        <div class="card-badge">
+          REAL TIME
+        </div>
+
+      </div>
+
+      <div
+        class="stream"
+        id="stream"
+      >
+        Waiting for telemetry packets...
+      </div>
+
+    </div>
+
+
+  </section>
+
+</main>
+
+
+<script>
+
+// =========================================================
+// STATE
+// =========================================================
+
+let lastSequence = null;
+
+let streamEntries = [];
+
+let telemetryRequestInFlight = false;
+
+let lastGeofenceState = { configured: false, points: 0 };
+let lastEventState = "NONE";
+let dashboardToastTimer = null;
+
+/** One-shot banner, top of the page, auto-hides. No dependency on any other
+    UI section -- this must work even if the rest of the dashboard is mid-load. */
+function showDashboardToast(message, type = 'success') {
+  let el = document.getElementById('dashboardToast');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'dashboardToast';
+    document.body.appendChild(el);
+  }
+  let bg = '#16321f', fg = '#8ef0b0', border = '#2fae63';
+  if (type === 'danger') {
+    bg = '#3d1117'; fg = '#ff8fa1'; border = '#ff4d6a';
+  } else if (type === 'info') {
+    bg = '#0e243a'; fg = '#8ac7ff'; border = '#2f8ae6';
+  }
+  el.style.cssText =
+    'position:fixed;top:16px;left:50%;transform:translateX(-50%);' +
+    'background:' + bg + ';color:' + fg + ';border:1px solid ' + border + ';' +
+    'padding:11px 22px;border-radius:10px;font:700 13px/1.4 -apple-system,sans-serif;' +
+    'z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.5);opacity:0;' +
+    'transition:opacity .25s ease;pointer-events:none;max-width:90vw;text-align:center;';
+  el.innerHTML = message;
+  requestAnimationFrame(() => { el.style.opacity = '1'; });
+  if (dashboardToastTimer) clearTimeout(dashboardToastTimer);
+  dashboardToastTimer = setTimeout(() => { el.style.opacity = '0'; }, 5000);
+}
+
+
+// =========================================================
+// MATH HELPERS (Distance Breakdown)
+// =========================================================
+
+function haversineDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371000; // meters
+  const rLat1 = lat1 * Math.PI / 180;
+  const rLat2 = lat2 * Math.PI / 180;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(rLat1) * Math.cos(rLat2) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+
+function distanceToSegment(lat, lon, lat1, lon1, lat2, lon2) {
+  const R = 6371000;
+  const x = 0; const y = 0;
+  const x1 = (lon1 - lon) * (Math.PI/180) * Math.cos(lat * Math.PI/180) * R;
+  const y1 = (lat1 - lat) * (Math.PI/180) * R;
+  const x2 = (lon2 - lon) * (Math.PI/180) * Math.cos(lat * Math.PI/180) * R;
+  const y2 = (lat2 - lat) * (Math.PI/180) * R;
+  const A = x - x1; const B = y - y1;
+  const C = x2 - x1; const D = y2 - y1;
+  const dot = A * C + B * D;
+  const len_sq = C * C + D * D;
+  let param = -1;
+  if (len_sq != 0) param = dot / len_sq;
+  let xx, yy;
+  if (param < 0) { xx = x1; yy = y1; }
+  else if (param > 1) { xx = x2; yy = y2; }
+  else { xx = x1 + param * C; yy = y1 + param * D; }
+  const dx = x - xx; const dy = y - yy;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+// =========================================================
+// FORMAT HELPERS
+// =========================================================
+
+function number(value, digits = 2) {
+
+  const n =
+    Number(value);
+
+  if (
+    !Number.isFinite(n)
+  ) {
+    return "—";
+  }
+
+  return n.toFixed(digits);
+}
+
+
+function setText(
+  id,
+  value
+) {
+
+  const el =
+    document.getElementById(id);
+
+  if (el) {
+    el.innerText =
+      value;
+  }
+}
+
+
+// =========================================================
+// RISK COLOR
+// =========================================================
+
+function applyRiskStyle(
+  score
+) {
+
+  const risk =
+    document.getElementById(
+      "risk"
+    );
+
+  const state =
+    document.getElementById(
+      "state"
+    );
+
+  const fill =
+    document.getElementById(
+      "riskFill"
+    );
+
+  risk.classList.remove(
+    "safe",
+    "warn",
+    "danger"
+  );
+
+  state.classList.remove(
+    "safe",
+    "warn",
+    "danger"
+  );
+
+  let colorClass =
+    "safe";
+
+  if (score >= 75) {
+    colorClass = "danger";
+  }
+  else if (score >= 35) {
+    colorClass = "warn";
+  }
+
+  risk.classList.add(
+    colorClass
+  );
+
+  state.classList.add(
+    colorClass
+  );
+
+  fill.style.width =
+    Math.max(
+      0,
+      Math.min(
+        100,
+        score
+      )
+    ) + "%";
+
+  if (
+    score >= 75
+  ) {
+
+    fill.style.background =
+      "var(--red)";
+
+  } else if (
+    score >= 35
+  ) {
+
+    fill.style.background =
+      "var(--yellow)";
+
+  } else {
+
+    fill.style.background =
+      "var(--green)";
+  }
+}
+
+
+// =========================================================
+// DECISION TEXT
+// =========================================================
+
+function decisionDescription(
+  action,
+  type
+) {
+
+  if (
+    action === "STEER_AWAY"
+  ) {
+
+    if (
+      type === "PERIMETER"
+    ) {
+
+      return (
+        "Collar detected a perimeter threat. " +
+        "Buzzer stays off unless triggered from the app."
+      );
+    }
+
+    if (
+      type === "HIGH_TRAFFIC_ROAD"
+    ) {
+
+      return (
+        "Collar detected a high-risk road approach. " +
+        "Buzzer stays off unless triggered from the app."
+      );
+    }
+
+    return (
+      "Risk detected. Buzzer stays off unless triggered from the app."
+    );
+  }
+
+  return (
+    "No immediate steering action required."
+  );
+}
+
+
+// =========================================================
+// STREAM
+// =========================================================
+
+function addStreamEntry(
+  data
+) {
+
+  // The packet's own time, not the browser's clock -- a replayed or
+  // backfilled row must not be stamped "now".
+  const time =
+    (data.lastUpdate
+      ? new Date(data.lastUpdate)
+      : new Date()
+    ).toLocaleTimeString();
+
+  const entry =
+    "[" + time + "] " +
+    "SEQ " + data.sequence +
+    " | " +
+    "GPS " +
+    number(data.latitude, 6) +
+    ", " +
+    number(data.longitude, 6) +
+    " (" + (data.satellites ?? 0) + " sat) " +
+    " | " +
+    "ACCEL " +
+    number(data.acceleration, 2) + " g" +
+    " | " +
+    "RISK " +
+    data.risk_score +
+    " | " +
+    data.risk_type +
+    " | " +
+    data.state +
+    " | " +
+    data.action;
+
+  streamEntries.unshift(
+    entry
+  );
+
+  if (
+    streamEntries.length > 40
+  ) {
+
+    streamEntries =
+      streamEntries.slice(
+        0,
+        40
+      );
+  }
+
+  const stream =
+    document.getElementById(
+      "stream"
+    );
+
+  stream.innerHTML =
+    streamEntries
+      .map(
+        item =>
+          `<div class="stream-line">${item}</div>`
+      )
+      .join("");
+}
+
+
+// =========================================================
+// UPDATE DASHBOARD
+// =========================================================
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const supabaseUrl = 'https://bzufqeuaordhrykgsiub.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6dWZxZXVhb3JkaHJ5a2dzaXViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0MzMzODYsImV4cCI6MjEwMjAwOTM4Nn0.k5ZKRnENWqn-cQ2KDIbzWkVIExobr3q8TqELlnyWeHU';
+  // The client is `db`, NOT `supabase`. The CDN UMD bundle already defines a
+  // global named `supabase`, so `const supabase = supabase.createClient(...)`
+  // was a redeclaration SyntaxError -- which kills the ENTIRE script block
+  // before a single line runs. That is why the page sat on "Connecting"
+  // forever with every panel blank: initSupabase() was never reached.
+  const db = window.supabase.createClient(supabaseUrl, supabaseKey);
+  let animalId = ''; // Fetched dynamically
+  const deviceKey = 'PASHU-A01';
+
+  let boundaryData = { configured: false, point_count: 0, coordinates: '' };
+
+  async function initSupabase() {
+    // Authenticate first so RLS allows us to read the data
+    const { error: authErr } = await db.auth.signInWithPassword({
+      email: 'demo@pashuguard.test',
+      password: 'demo123456'
+    });
+    if (authErr) {
+      console.error("Auth error:", authErr);
+      document.getElementById('gatewayStatus').innerText = 'Cloud — Auth Error';
+      return;
+    }
+
+    // Get the active zone.
+    //
+    // This used to read `zones[0].coordinates` -- a column that does not
+    // exist on grazing_zones (the shape lives in `boundary`, PostGIS
+    // geography, which PostgREST hands back as hex EWKB). So `coords` was
+    // undefined and `.forEach` threw, killing initSupabase() before it ever
+    // reached the telemetry fetch below. The whole page stayed blank
+    // because of the geofence panel.
+    //
+    // active_zone_ring() returns the enabled zone as plain [[lat,lon],...].
+    // Wrapped so a zone problem can never again take the live data down
+    // with it -- telemetry is the point of this page, the fence is trim.
+    try {
+      const { data: zone, error: zoneErr } = await db.rpc('active_zone_ring');
+      if (zoneErr) throw zoneErr;
+
+      const ring = zone?.ring;
+      if (Array.isArray(ring) && ring.length >= 3) {
+        // A closed ring repeats its first point as its last; that repeat
+        // closes the polygon, it is not a corner the farmer drew.
+        const first = ring[0];
+        const last = ring[ring.length - 1];
+        const closed = first[0] === last[0] && first[1] === last[1];
+        const corners = closed ? ring.slice(0, -1) : ring;
+
+        let hash = 0;
+        for (let pt of corners) {
+          hash = (hash * 31 + ((pt[0] * 1000000) ^ (pt[1] * 1000000))) | 0; // JS 32-bit bitwise
+        }
+
+        boundaryData = {
+          configured: true,
+          point_count: corners.length,
+          hash: hash,
+          coordinates: corners.map(c => c[0] + ',' + c[1]).join(';')
+        };
+      }
+    } catch (e) {
+      console.warn('Zone lookup failed; continuing without a fence.', e);
+    }
+
+    // 1. Fetch the correct animal_id for the device
+    const { data: device, error: devErr } = await db.from('devices').select('animal_id').eq('device_key', deviceKey).single();
+    if (devErr || !device) {
+      console.error("Could not find animal_id for device:", deviceKey);
+      document.getElementById('gatewayStatus').innerText = 'Cloud — Error: No animal linked';
+      return;
+    }
+    animalId = device.animal_id;
+    console.log("Found animal_id:", animalId);
+
+    // Subscribe to raw telemetry and risk_state (Bypassing the poor_fix filter for testing)
+    db.channel('public:telemetry')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'telemetry', filter: 'animal_id=eq.'+animalId }, payload => {
+        handleTelemetryUpdate(payload.new);
+      })
+      .subscribe();
+      
+    db.channel('public:risk_state')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'risk_state', filter: 'animal_id=eq.'+animalId }, payload => {
+        handleRiskUpdate(payload.new);
+      })
+      .subscribe();
+      
+    // Initial fetch from raw telemetry instead of latest_positions
+    const { data: pos } = await db.from('telemetry').select('*').eq('animal_id', animalId).order('recorded_at', { ascending: false }).limit(1).single();
+    if (pos) handleTelemetryUpdate(pos);
+    const { data: risk } = await db.from('risk_state').select('*').eq('animal_id', animalId).single();
+    if (risk) handleRiskUpdate(risk);
+    
+    document.getElementById('gatewayStatus').innerText = 'Cloud — Connected';
+  }
+
+  let latestData = {
+    sequence: 0,
+    latitude: 0,
+    longitude: 0,
+    speed: 0,
+    heading: 0,
+    satellites: 0,
+    acceleration: 0,
+    boundary_distance: -1,
+    road_distance: -1,
+    boundary_configured: false,
+    boundary_point_count: 0,
+    risk_score: 0,
+    risk_type: 'NONE',
+    state: 'SAFE',
+    action: 'NONE',
+    buzzer: false,
+    vibration: false,
+    event: 'NONE'
+  };
+
+  function parseWkbPoint(hexStr) {
+    if (typeof hexStr !== 'string' || !/^[0-9A-Fa-f]+$/.test(hexStr)) return null;
+    try {
+      const hex = hexStr.slice(-32); // Last 16 bytes are the two doubles (X, Y)
+      if (hex.length !== 32) return null;
+      const parseDoubleLE = (h) => {
+        const bytes = new Uint8Array(8);
+        for (let i = 0; i < 8; i++) bytes[i] = parseInt(h.substr(i*2, 2), 16);
+        return new DataView(bytes.buffer).getFloat64(0, true);
+      };
+      return { lon: parseDoubleLE(hex.slice(0, 16)), lat: parseDoubleLE(hex.slice(16, 32)) };
+    } catch (e) { return null; }
+  }
+
+  function handleTelemetryUpdate(pos) {
+    // If reading from raw telemetry table instead of view, ST_X/ST_Y aren't extracted automatically
+    // But since the UI expects raw numbers, and the ingest function inserts WKT, 
+    // we'll just fall back to 0.000000 if it's raw WKT, or use regex
+    let lat = 0, lon = 0;
+    if (pos.position && typeof pos.position === 'string') {
+      if (pos.position.includes('POINT(')) {
+        const match = pos.position.match(/POINT\(([-\d.]+) ([-\d.]+)\)/);
+        if (match) { lon = parseFloat(match[1]); lat = parseFloat(match[2]); }
+      } else {
+        const pt = parseWkbPoint(pos.position);
+        if (pt) { lon = pt.lon; lat = pt.lat; }
+      }
+    } else if (pos.lat !== undefined) {
+      lat = pos.lat; lon = pos.lon;
+    }
+    
+    latestData.latitude = lat;
+    latestData.longitude = lon;
+    latestData.speed = pos.speed_kmh;
+    latestData.heading = pos.heading_deg;
+    latestData.battery = pos.battery_pct;
+    latestData.sequence = pos.seq;
+    latestData.satellites = pos.sats;
+    // Never mapped before, so Acceleration could only ever show its initial
+    // value. IMU is independent of the GPS fix -- it is real right now even
+    // while lat/lon are still zero.
+    latestData.acceleration = pos.accel_g ?? 0;
+
+    // Measure the real gap between packets. The card used to state a flat
+    // "1 Hz", which was simply untrue -- the collar reports every few
+    // seconds, not every second.
+    if (latestData.lastUpdate && pos.recorded_at) {
+      const gapS =
+        (new Date(pos.recorded_at) - new Date(latestData.lastUpdate)) / 1000;
+      if (gapS > 0 && gapS < 300) latestData.gapSeconds = gapS;
+    }
+    latestData.lastUpdate = pos.recorded_at;
+    renderUI();
+    // One line per real packet. Called from here rather than renderUI()
+    // because renderUI also runs on risk_state changes, which would log a
+    // duplicate line for a packet that never arrived.
+    addStreamEntry(latestData);
+  }
+
+  function handleRiskUpdate(risk) {
+    latestData.state = (risk.state || 'safe').toUpperCase();
+    latestData.risk_score = risk.geofence_risk || 0;
+    // ?? not ||: a real 0 m boundary distance is meaningful and must not be
+    // collapsed into the "unknown" sentinel.
+    latestData.boundary_distance = risk.components?.boundary_distance ?? -1;
+    latestData.buzzer = risk.components?.buzzer_on || false;
+    latestData.vibration = risk.components?.vibration_on || false;
+    latestData.action = latestData.state === 'HIGH_RISK' ? 'SHOCK' : latestData.state === 'WARNING' ? 'BUZZ' : 'NONE';
+    // Was hardcoded to 'GEOFENCE' for every reading regardless of what the
+    // collar actually determined. It now reports the collar's own
+    // classification, and says so plainly when it hasn't sent one.
+    latestData.risk_type = risk.components?.risk_type || 'UNKNOWN';
+    latestData.boundary_pts = risk.components?.boundary_pts ?? null;
+    renderUI();
+  }
+
+  // --- REPLACE THE REST OF updateTelemetry WITH renderUI ---
+  function renderUI() {
+    const data = latestData;
+    data.boundary_configured = boundaryData.configured;
+    data.boundary_point_count = boundaryData.point_count;
+    data.app_boundary_hash = boundaryData.hash;
+
+    // Copied from original logic
+    setText("liveStatus", "● LIVE");
+    setText("collarStatus", data.state === "SAFE" ? "● Active & Safe" : "● Warning");
+    setText("collarId", "PASHU-A01 (Cloud)");
+    setText("sequence", data.sequence);
+    setText("lat", number(data.latitude, 6));
+    setText("lon", number(data.longitude, 6));
+    setText("speed", number(data.speed, 1) + " km/h");
+    setText("heading", data.heading + "°");
+    setText("sat", Number.isFinite(Number(data.satellites)) ? Number(data.satellites) : 0);
+    setText("accel", number(data.acceleration, 2) + " g");
+    setText("boundary", data.boundary_distance >= 0 ? number(data.boundary_distance, 1) + " m" : "—");
+    setText("road", data.road_distance >= 0 ? number(data.road_distance, 1) + " m" : "—");
+    
+    let geoStatus = "Not configured";
+    if (data.boundary_configured) {
+      let appPts = data.boundary_point_count;
+      let appHash = data.app_boundary_hash;
+      let colPts = data.boundary_pts ?? 0;
+      let colHash = data.boundary_hash ?? 0;
+      
+      // If downsampling happened in the app, the hash won't strictly match the 32-point raw boundary.
+      // But if appPts <= 8, the hash MUST match.
+      if (colPts === appPts && (appPts > 8 || colHash === appHash)) {
+        geoStatus = `App ${appPts} · Collar ${colPts} ✓`;
+      } else if (appPts > 8 && colPts === 8) {
+        geoStatus = `App ${appPts} · Collar 8 ✓ (Downsampled)`;
+      } else if (colPts > 0) {
+        geoStatus = `App ${appPts} · Collar ${colPts} ⏳`;
+      } else {
+        geoStatus = `App ${appPts} · Collar ${colPts} ✗`;
+      }
+    } else if (data.boundary_pts !== null && data.boundary_pts !== undefined && data.boundary_pts > 0) {
+      // Collar has a boundary but app does not (maybe it was deleted)
+      geoStatus = `App 0 · Collar ${data.boundary_pts} ✗ (Orphaned)`;
+    }
+    setText("geofence", geoStatus);
+    
+    setText("risk", data.risk_score + " / 100");
+    setText("type", data.risk_type);
+    setText("state", data.state);
+    setText("action", data.action);
+    applyRiskStyle(data.risk_score);
+    setText("decisionText", decisionDescription(data.action, data.risk_type));
+    setText(
+      "rate",
+      data.gapSeconds
+        ? "every " + data.gapSeconds.toFixed(1) + " s"
+        : "—"
+    );
+    setText("buzzer", data.buzzer ? "ON" : "OFF");
+    setText("vibration", data.vibration ? "ON" : "OFF");
+    setText("event", data.event);
+    setText("eventTime", new Date().toLocaleTimeString());
+    // The TIME OF THE PACKET, not the browser's clock. Stamping "now" here
+    // made a three-day-old row look like it had just arrived, which is the
+    // one thing this field exists to tell you.
+    setText(
+      "lastUpdate",
+      data.lastUpdate
+        ? new Date(data.lastUpdate).toLocaleTimeString()
+        : "Waiting..."
+    );
+  }
+
+  initSupabase();
+</script>
+</body>
+</html>

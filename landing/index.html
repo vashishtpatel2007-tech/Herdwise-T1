@@ -1,0 +1,882 @@
+<meta charset="utf-8" />
+<title>PashuGuard</title>
+<meta name="description" content="A collar that turns cattle back before they reach the highway." />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#0B1410" />
+
+<style>
+/* ============================================================
+   PashuGuard — landing
+   A committed single visual world: the field at dusk, which is
+   when cattle actually die on highways. Every colour is painted
+   explicitly so the page holds on any host ground.
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Ground: deep green-black. Not pure black — the green cast ties
+     to the ink token the field app already uses. */
+  --night:    #0B1410;
+  --ink:      #10231A;
+  --ink-2:    #17301F;
+  --hairline: #223A2B;
+
+  /* The accent is the yellow of a government cattle ear tag — the
+     object already hanging on every animal in the country. */
+  --tag:      #F2C200;
+  --tag-dim:  #9C7F10;
+
+  --bone:     #F4F2EC;
+  --sage:     #7E9481;   /* neutral, biased toward the field */
+  --sage-dim: #55685A;
+
+  --danger:   #D62828;   /* semantic: the road. never decorative */
+  --safe:     #4FA96B;
+
+  /* Signage: heavy, wide, uppercase. The subject's own vernacular. */
+  --display: "Arial Black", "Helvetica Neue", Impact, system-ui, sans-serif;
+  --body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+
+  --shell: 78rem;
+  --r-card: 1.5rem;
+  --r-pill: 999px;
+}
+
+/* Rem-based adaptive grid: the whole layout is sized in rem and the
+   root scales with the viewport, so the design stays proportional
+   from a 360px phone to a 4K display. */
+@media (max-width: 1920px) { html { font-size: 0.833333vw } }
+@media (max-width: 1440px) { html { font-size: 1.111111vw } }
+@media (max-width: 1024px) { html { font-size: 1.5625vw } }
+@media (max-width: 640px)  { html { font-size: 4.166667vw } }
+
+html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+
+body {
+  background: var(--night);
+  color: var(--bone);
+  font-family: var(--body);
+  font-size: 1rem;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+ul { list-style: none; }
+:focus-visible { outline: 2px solid var(--tag); outline-offset: 3px; border-radius: 4px; }
+
+.shell { width: 100%; max-width: var(--shell); margin-inline: auto; padding-inline: 1.5rem; }
+@media (min-width: 641px) { .shell { padding-inline: 2.5rem } }
+
+/* ---- type -------------------------------------------------- */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--sage);
+}
+.eyebrow::before {
+  content: ""; width: 0.4rem; height: 0.4rem; border-radius: 999px;
+  background: var(--tag); flex: none;
+}
+
+.h1 {
+  font-family: var(--display);
+  font-size: clamp(2.4rem, 7vw, 5.4rem);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  color: var(--bone);
+}
+.h2 {
+  font-family: var(--display);
+  font-size: clamp(1.9rem, 4.2vw, 3.2rem);
+  line-height: 1.0;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.h3 { font-family: var(--display); font-size: 1.35rem; letter-spacing: -0.01em; text-transform: uppercase; }
+.lede { font-size: 1.15rem; color: var(--sage); max-width: 34ch; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.tag-text { color: var(--tag); }
+
+/* ---- buttons ----------------------------------------------- */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.75rem;
+  border-radius: var(--r-pill);
+  padding: 0.9rem 1.6rem;
+  font-weight: 650; font-size: 0.95rem;
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), background-color .25s, color .25s, border-color .25s;
+  will-change: transform;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-solid { background: var(--tag); color: #1A1200; }
+.btn-solid:hover { background: #FFD62E; }
+.btn-ghost { border: 1px solid var(--hairline); color: var(--bone); }
+.btn-ghost:hover { border-color: var(--sage); background: rgba(126,148,129,.08); }
+.btn .arrow { display: inline-block; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+.btn:hover .arrow { transform: translateX(3px); }
+
+/* ---- loader ------------------------------------------------ */
+#loader {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2rem; background: var(--night);
+  transition: transform .8s cubic-bezier(.76,0,.24,1);
+}
+#loader.done { transform: translateY(-100%); }
+.loader-mark { display: flex; align-items: center; gap: .7rem; font-family: var(--display);
+  font-size: 1.5rem; text-transform: uppercase; letter-spacing: -0.01em; }
+.loader-bar { width: min(20rem, 70vw); height: 2px; background: var(--hairline); overflow: hidden; }
+.loader-fill { height: 100%; width: 0%; background: var(--tag); }
+.loader-row { width: min(20rem, 70vw); display: flex; justify-content: space-between;
+  font-family: var(--mono); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--sage-dim); }
+
+/* ---- header ------------------------------------------------ */
+header {
+  position: fixed; inset-inline: 0; top: 0; z-index: 100;
+  backdrop-filter: blur(10px);
+  background: linear-gradient(to bottom, rgba(11,20,16,.9), rgba(11,20,16,0));
+  transition: opacity .6s ease, transform .6s ease;
+}
+header .inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding-block: 1.1rem; }
+.brand { display: flex; align-items: center; gap: .6rem; font-family: var(--display);
+  font-size: 1.1rem; text-transform: uppercase; letter-spacing: -0.01em; }
+.clock { display: none; align-items: center; gap: .6rem; font-family: var(--mono);
+  font-size: .72rem; color: var(--sage); border: 1px solid var(--hairline);
+  border-radius: var(--r-pill); padding: .45rem .9rem; }
+@media (min-width: 900px) { .clock { display: inline-flex } }
+.clock b { color: var(--bone); font-weight: 500; }
+
+/* ---- hero -------------------------------------------------- */
+#hero { position: relative; min-height: 100svh; display: flex; align-items: flex-end;
+  padding-block: 8rem 3rem; overflow: hidden; }
+#field { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero-veil { position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to top, rgba(11,20,16,.96) 4%, rgba(11,20,16,.55) 38%, rgba(11,20,16,.15) 70%); }
+.hero-grid { position: relative; z-index: 3; display: grid; gap: 2.5rem; align-items: end; }
+@media (min-width: 1025px) { .hero-grid { grid-template-columns: 1.35fr .85fr; gap: 4rem } }
+
+/* the live readout — this is a device product, so it reads like one */
+.readout { border: 1px solid var(--hairline); border-radius: var(--r-card);
+  background: rgba(16,35,26,.72); backdrop-filter: blur(8px); padding: 1.25rem; }
+.readout-head { display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--sage-dim); margin-bottom: .9rem; }
+.dot-live { width: .45rem; height: .45rem; border-radius: 999px; background: var(--safe);
+  display: inline-block; margin-right: .4rem; }
+.readout-row { display: flex; justify-content: space-between; align-items: baseline;
+  padding-block: .55rem; border-top: 1px solid var(--hairline); font-size: .85rem; }
+.readout-row:first-of-type { border-top: 0; }
+.readout-row span:first-child { color: var(--sage); }
+.readout-val { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--bone); }
+.cue-bar { margin-top: .9rem; height: .35rem; border-radius: 999px; background: var(--hairline); overflow: hidden; }
+.cue-fill { height: 100%; width: 0%; background: var(--tag); transition: width .18s linear, background-color .2s; }
+.cue-label { margin-top: .55rem; font-family: var(--mono); font-size: .7rem;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--sage-dim); }
+
+.hint { margin-top: 1.1rem; display: inline-flex; align-items: center; gap: .5rem;
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--sage-dim); }
+
+/* ---- sections ---------------------------------------------- */
+section { position: relative; }
+.band { padding-block: 6rem; }
+.band-light { background: var(--bone); color: #101A14; }
+.band-light .eyebrow { color: #5A6B5D; }
+.band-light .lede { color: #45524A; }
+
+.rule { height: 1px; background: var(--hairline); border: 0; }
+.band-light .rule { background: #D8D5CB; }
+
+/* steps — numbering encodes a real sequence, so it earns its place */
+.steps { display: grid; gap: 1.5rem; margin-top: 3rem; }
+@media (min-width: 800px) { .steps { grid-template-columns: repeat(3, 1fr); gap: 2rem } }
+.step { display: flex; flex-direction: column; gap: .8rem; padding-top: 1.4rem;
+  border-top: 2px solid #101A14; }
+.step-n { font-family: var(--mono); font-size: .72rem; letter-spacing: .14em; color: #7B8A7E; }
+.step h3 { font-family: var(--display); font-size: 1.3rem; text-transform: uppercase; letter-spacing: -.01em; }
+.step p { color: #45524A; font-size: .95rem; }
+
+/* the escalation ladder — numbering here is the actual intensity order */
+.ladder { margin-top: 3rem; }
+.rung { display: grid; grid-template-columns: 2.5rem 1fr auto; gap: 1rem;
+  align-items: center; padding-block: 1.5rem; border-top: 1px solid var(--hairline);
+  border-radius: 1rem; padding-inline: 0;
+  transition: padding-inline .4s cubic-bezier(.2,.8,.2,1), background-color .4s; }
+@media (hover: hover) { .rung:hover { background: var(--ink); padding-inline: 1.25rem } }
+.rung-n { font-family: var(--mono); font-size: .8rem; color: var(--sage-dim); }
+.rung h3 { font-family: var(--display); font-size: clamp(1.2rem,2.6vw,1.9rem);
+  text-transform: uppercase; letter-spacing: -.01em; }
+.rung p { color: var(--sage); font-size: .9rem; margin-top: .2rem; }
+.rung-meter { display: flex; gap: .25rem; }
+.rung-meter i { width: .4rem; height: 1.6rem; border-radius: 2px; background: var(--hairline); display: block; }
+.rung-meter i.on { background: var(--tag); }
+.rung-meter i.hot { background: var(--danger); }
+
+/* feature cards */
+.feat { display: grid; gap: 1rem; margin-top: 3rem; }
+@media (min-width: 720px)  { .feat { grid-template-columns: repeat(2, 1fr); gap: 1.25rem } }
+@media (min-width: 1100px) { .feat { grid-template-columns: repeat(3, 1fr) } }
+.feat-card {
+  display: flex; flex-direction: column; gap: .7rem;
+  padding: 1.6rem 1.5rem 1.8rem;
+  border: 1px solid var(--hairline); border-radius: var(--r-card);
+  background: linear-gradient(160deg, var(--ink-2), var(--ink));
+  transition: border-color .35s, transform .35s cubic-bezier(.2,.8,.2,1);
+}
+@media (hover: hover) { .feat-card:hover { border-color: var(--sage-dim); transform: translateY(-3px) } }
+.feat-card h3 { font-family: var(--display); font-size: 1.15rem;
+  text-transform: uppercase; letter-spacing: -.01em; }
+.feat-card p { color: var(--sage); font-size: .92rem; }
+.chip { align-self: flex-start; font-family: var(--mono); font-size: .62rem;
+  letter-spacing: .14em; text-transform: uppercase; padding: .3rem .6rem;
+  border-radius: var(--r-pill); border: 1px solid; }
+/* honest labelling: shipped vs planned, stated on the card itself */
+.chip-on   { color: var(--safe); border-color: rgba(79,169,107,.4); background: rgba(79,169,107,.08); }
+.chip-next { color: var(--sage); border-color: var(--hairline); background: rgba(126,148,129,.06); }
+
+/* stats */
+.stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2.5rem 1.5rem; margin-top: 3rem; }
+@media (min-width: 900px) { .stats { grid-template-columns: repeat(4, 1fr) } }
+.stat-n { font-family: var(--display); font-size: clamp(2.4rem,5vw,3.6rem); line-height: 1;
+  letter-spacing: -.03em; color: var(--tag); font-variant-numeric: tabular-nums; }
+.stat-l { margin-top: .6rem; font-size: .88rem; color: var(--sage); }
+
+/* honesty panel — the aesthetic risk: a landing page that states
+   plainly what the product does NOT do */
+.honest { display: grid; gap: 1rem; margin-top: 2.5rem; }
+@media (min-width: 800px) { .honest { grid-template-columns: repeat(2,1fr); gap: 1.25rem } }
+.honest li { display: flex; gap: .9rem; padding: 1.15rem 1.25rem; border-radius: 1rem;
+  background: var(--ink); border: 1px solid var(--hairline); font-size: .93rem; color: var(--sage); }
+.honest li b { color: var(--bone); font-weight: 600; display: block; margin-bottom: .15rem; }
+.honest .x { color: var(--danger); font-family: var(--mono); flex: none; }
+
+/* footer */
+footer { background: var(--ink); padding-block: 5rem 2.5rem; }
+.foot-cta { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: 2rem; padding-bottom: 3rem; border-bottom: 1px solid var(--hairline); }
+.foot-cols { display: grid; gap: 2.5rem; padding-block: 3rem; }
+@media (min-width: 800px) { .foot-cols { grid-template-columns: 1.4fr 1fr 1fr } }
+.foot-cols h4 { font-family: var(--mono); font-size: .7rem; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--sage-dim); margin-bottom: .9rem; }
+.foot-cols li { margin-bottom: .5rem; }
+.foot-cols a { color: var(--sage); font-size: .92rem; transition: color .2s, transform .2s; display: inline-block; }
+.foot-cols a:hover { color: var(--tag); transform: translateX(3px); }
+.legal { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between;
+  padding-top: 2rem; border-top: 1px solid var(--hairline);
+  font-family: var(--mono); font-size: .7rem; color: var(--sage-dim); }
+
+/* watermark */
+.wm { font-family: var(--display); font-size: clamp(3.5rem, 15vw, 12rem); line-height: .8;
+  letter-spacing: -.04em; text-transform: uppercase; color: rgba(244,242,236,.045);
+  text-align: center; user-select: none; pointer-events: none; margin-top: 2rem; }
+
+/* scroll reveal */
+.rv { opacity: 0; transform: translateY(1.5rem);
+  transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+.rv.in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .rv { opacity: 1; transform: none; }
+  #loader { display: none; }
+}
+</style>
+
+<!-- ================= LOADER ================= -->
+<div id="loader">
+  <div class="loader-mark">
+    <svg width="26" height="26" viewBox="0 0 48 48" aria-hidden="true">
+      <rect x="10" y="6" width="28" height="36" rx="9" fill="#F2C200"/>
+      <circle cx="24" cy="17" r="5" fill="#0B1410"/>
+    </svg>
+    Pashu<span class="tag-text">Guard</span>
+  </div>
+  <div class="loader-bar"><div class="loader-fill" id="lfill"></div></div>
+  <div class="loader-row"><span>Waking collars</span><span class="mono" id="lnum">000</span></div>
+</div>
+
+<!-- ================= HEADER ================= -->
+<header id="hdr" style="opacity:0">
+  <div class="shell inner">
+    <a class="brand" href="#hero">
+      <svg width="22" height="22" viewBox="0 0 48 48" aria-hidden="true">
+        <rect x="10" y="6" width="28" height="36" rx="9" fill="#F2C200"/>
+        <circle cx="24" cy="17" r="5" fill="#0B1410"/>
+      </svg>
+      Pashu<span class="tag-text">Guard</span>
+    </a>
+    <div class="clock">
+      <span>Farm time</span><b id="clk">—</b><span id="clkd">—</span>
+    </div>
+    <a class="btn btn-ghost" href="#contact" style="padding:.6rem 1.1rem;font-size:.85rem">
+      Talk to us <span class="arrow">→</span>
+    </a>
+  </div>
+</header>
+
+<main>
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <canvas id="field" aria-hidden="true"></canvas>
+  <div class="hero-veil"></div>
+
+  <div class="shell hero-grid">
+    <div>
+      <p class="eyebrow rv">Virtual fencing for cattle</p>
+      <h1 class="h1 rv" style="margin-top:1.2rem">
+        She turns back<br>before the<br><span class="tag-text">highway</span>.
+      </h1>
+      <p class="lede rv" style="margin-top:1.6rem">
+        A collar that watches where your cattle are going — and sounds on
+        one ear to steer them away from the road. No fence. No wire.
+      </p>
+      <div class="rv" style="margin-top:2rem;display:flex;gap:.75rem;flex-wrap:wrap">
+        <a class="btn btn-solid" href="#contact">Get a collar <span class="arrow">→</span></a>
+        <a class="btn btn-ghost" href="#how">How it works</a>
+      </div>
+      <p class="hint rv" id="hint">↑ Move your cursor toward the road</p>
+    </div>
+
+    <!-- live readout: you are the animal -->
+    <div class="readout rv" id="readout">
+      <div class="readout-head">
+        <span><span class="dot-live"></span>Collar 001 · live</span>
+        <span class="mono" id="ro-int">10 min</span>
+      </div>
+      <div class="readout-row"><span>Nearest road</span><span class="readout-val" id="ro-road">—</span></div>
+      <div class="readout-row"><span>Closing speed</span><span class="readout-val" id="ro-close">0.0 m/s</span></div>
+      <div class="readout-row"><span>Inside field</span><span class="readout-val" id="ro-zone">yes</span></div>
+      <div class="cue-bar"><div class="cue-fill" id="ro-cue"></div></div>
+      <div class="cue-label" id="ro-cuelabel">Collar quiet</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HOW ================= -->
+<section class="band band-light" id="how">
+  <div class="shell">
+    <p class="eyebrow rv">How it works</p>
+    <h2 class="h2 rv" style="margin-top:1rem;max-width:16ch">Three things, and none of them are a fence.</h2>
+
+    <ol class="steps">
+      <li class="step rv">
+        <span class="step-n">STEP 01</span>
+        <h3>Walk your field</h3>
+        <p>Hold the phone and walk the edge of your own land. The boundary
+           draws itself. No map reading, no guessing on a satellite photo.</p>
+      </li>
+      <li class="step rv">
+        <span class="step-n">STEP 02</span>
+        <h3>The collar watches</h3>
+        <p>It knows the boundary and the highways near it, stored on the
+           device. It keeps working when there is no signal at all.</p>
+      </li>
+      <li class="step rv">
+        <span class="step-n">STEP 03</span>
+        <h3>It turns her back</h3>
+        <p>Sound on one ear, then a vibration. She walks away from it —
+           back into your field, before she is anywhere near the road.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= LADDER ================= -->
+<section class="band">
+  <div class="shell">
+    <p class="eyebrow rv">What she feels</p>
+    <h2 class="h2 rv" style="margin-top:1rem;max-width:18ch">It only gets louder if she keeps going.</h2>
+    <p class="lede rv" style="margin-top:1.2rem">
+      Four levels, and no shock at any of them. A startled animal runs in
+      whatever direction she was already facing — next to a highway, that is
+      the thing you are trying to prevent.
+    </p>
+
+    <ul class="ladder">
+      <li class="rung rv">
+        <span class="rung-n">01</span>
+        <div><h3>A tone</h3><p>She has drifted toward the edge. Most animals turn here.</p></div>
+        <span class="rung-meter"><i class="on"></i><i></i><i></i><i></i></span>
+      </li>
+      <li class="rung rv">
+        <span class="rung-n">02</span>
+        <div><h3>Faster tone</h3><p>She has not turned yet. The sound picks up on one side only.</p></div>
+        <span class="rung-meter"><i class="on"></i><i class="on"></i><i></i><i></i></span>
+      </li>
+      <li class="rung rv">
+        <span class="rung-n">03</span>
+        <div><h3>Tone and vibration</h3><p>Under thirty metres from the highway, still closing.</p></div>
+        <span class="rung-meter"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span>
+      </li>
+      <li class="rung rv">
+        <span class="rung-n">04</span>
+        <div><h3>Continuous, both ears</h3><p>She is on the road. Now the noise itself may move her — and your phone rings.</p></div>
+        <span class="rung-meter"><i class="on"></i><i class="on"></i><i class="on"></i><i class="hot"></i></span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= THE APP ================= -->
+<section class="band" style="padding-top:0" id="app">
+  <div class="shell">
+    <hr class="rule" style="margin-bottom:4rem">
+    <p class="eyebrow rv">On your phone</p>
+    <h2 class="h2 rv" style="margin-top:1rem;max-width:18ch">Move the herd without walking it.</h2>
+    <p class="lede rv" style="margin-top:1.2rem">
+      The fence is software, so it can move. Draw tomorrow's grazing on the
+      map and the collars walk them over — no gates, no shouting, no lost afternoon.
+    </p>
+
+    <ul class="feat">
+      <li class="feat-card rv">
+        <span class="chip chip-on">Working</span>
+        <h3>Live herd</h3>
+        <p>Every animal on the satellite map, with how old each position is.
+           Tap one to see her speed, her collar charge, her day's track.</p>
+      </li>
+      <li class="feat-card rv">
+        <span class="chip chip-next">Next</span>
+        <h3>Shift to a new field</h3>
+        <p>Draw the next paddock, press shift. The collars widen the old
+           boundary and close the new one, and the herd moves itself across.</p>
+      </li>
+      <li class="feat-card rv">
+        <span class="chip chip-on">Working</span>
+        <h3>Grazing hours</h3>
+        <p>This field, 6am to 6pm, weekdays. Outside those hours the fence
+           stands down — but the highway warnings never do.</p>
+      </li>
+      <li class="feat-card rv">
+        <span class="chip chip-on">Working</span>
+        <h3>Collars off</h3>
+        <p>Walking them down the lane to another village? Switch the collars
+           off from the app. They keep reporting position; they just stop arguing.</p>
+      </li>
+      <li class="feat-card rv">
+        <span class="chip chip-next">Next</span>
+        <h3>Named fields, on rotation</h3>
+        <p>Keep several fields and set the week's order. Each morning the
+           right one is live and the rest are resting.</p>
+      </li>
+      <li class="feat-card rv">
+        <span class="chip chip-on">Working</span>
+        <h3>A tag anyone can scan</h3>
+        <p>Print a tag for her ear. Whoever finds her — any phone, no app,
+           no account — gets a button that calls you.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= STATS ================= -->
+<section class="band" style="padding-top:0">
+  <div class="shell">
+    <hr class="rule">
+    <div class="stats">
+      <div class="rv"><div class="stat-n" data-count="500" data-suffix="">0</div>
+        <div class="stat-l">futures simulated for every animal, every few seconds</div></div>
+      <div class="rv"><div class="stat-n" data-count="18" data-suffix=" B">0</div>
+        <div class="stat-l">bytes per message — small enough for a village signal</div></div>
+      <div class="rv"><div class="stat-n" data-count="15" data-suffix=" m">0</div>
+        <div class="stat-l">from the road is where warning becomes emergency</div></div>
+      <div class="rv"><div class="stat-n" data-count="3" data-suffix="">0</div>
+        <div class="stat-l">languages — English, हिंदी, ಕನ್ನಡ</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HONESTY ================= -->
+<section class="band" style="padding-top:0">
+  <div class="shell">
+    <hr class="rule" style="margin-bottom:4rem">
+    <p class="eyebrow rv">Plainly</p>
+    <h2 class="h2 rv" style="margin-top:1rem;max-width:20ch">What it does not do.</h2>
+    <p class="lede rv" style="margin-top:1.2rem">
+      Every one of these is a decision, not a missing feature.
+    </p>
+
+    <ul class="honest">
+      <li class="rv"><span class="x">—</span><span><b>It never shocks her.</b>
+        Sound and vibration only, at every level.</span></li>
+      <li class="rv"><span class="x">—</span><span><b>It stays quiet along a roadside.</b>
+        An animal grazing parallel to a highway is not warned, however close.
+        Warn her there and she learns the collar means nothing.</span></li>
+      <li class="rv"><span class="x">—</span><span><b>It says nothing when it cannot see the sky.</b>
+        A poor GPS fix raises a collar fault, never a false alarm about your animal.</span></li>
+      <li class="rv"><span class="x">—</span><span><b>It never shows an old position as if it were now.</b>
+        Every location on the screen carries how old it is.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= CONTACT / CTA ================= -->
+<section class="band band-light" id="contact" style="padding-block:5rem">
+  <div class="shell" style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:2rem">
+    <div>
+      <p class="eyebrow rv">Get started</p>
+      <h2 class="h2 rv" style="margin-top:1rem;max-width:14ch">Put one on your herd.</h2>
+    </div>
+    <a class="btn btn-solid rv" href="#contact" style="background:#101A14;color:var(--bone)">
+      Request a collar <span class="arrow">↗</span>
+    </a>
+  </div>
+</section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="shell">
+    <div class="foot-cta">
+      <div>
+        <div class="brand" style="font-size:1.3rem">
+          <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+            <rect x="10" y="6" width="28" height="36" rx="9" fill="#F2C200"/>
+            <circle cx="24" cy="17" r="5" fill="#0B1410"/>
+          </svg>
+          Pashu<span class="tag-text">Guard</span>
+        </div>
+        <p style="margin-top:.9rem;color:var(--sage);max-width:30ch;font-size:.95rem">
+          Built for smallholder farmers, for fields with one bar of signal.
+        </p>
+      </div>
+      <a class="btn btn-solid" href="#contact">Request a collar <span class="arrow">↗</span></a>
+    </div>
+
+    <div class="foot-cols">
+      <div>
+        <h4>The system</h4>
+        <ul>
+          <li><a href="#how">Walk-the-edge boundary</a></li>
+          <li><a href="#how">On-collar road fencing</a></li>
+          <li><a href="#how">Grazing hours</a></li>
+          <li><a href="#how">Scan tag, call owner</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>For farmers</h4>
+        <ul>
+          <li><a href="#contact">Get a collar</a></li>
+          <li><a href="#contact">Talk to us</a></li>
+          <li><a href="#how">Languages</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Built on</h4>
+        <ul>
+          <li><a href="#">OpenStreetMap road data</a></li>
+          <li><a href="#">Open satellite imagery</a></li>
+          <li><a href="#">No shock collars</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal">
+      <span>© 2026 PashuGuard</span>
+      <span>Made for the field, not the demo</span>
+    </div>
+
+    <div class="wm">PashuGuard</div>
+  </div>
+</footer>
+
+<script type="module">
+/* ============================================================
+   1. Loader — counts collars waking, then lifts away.
+   ============================================================ */
+const FILL_MS = 1200;
+const fill = document.getElementById('lfill');
+const num  = document.getElementById('lnum');
+const loader = document.getElementById('loader');
+const easeInOut = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
+
+let ready = false;
+let finished = false;
+const t0 = performance.now();
+
+/* Runs exactly once, from whichever path gets there first. */
+function finish() {
+  if (finished) return;
+  finished = true;
+  fill.style.width = '100%';
+  num.textContent = '100';
+  loader.classList.add('done');
+  setTimeout(() => { loader.remove(); ready = true; kickReveals(); }, 820);
+}
+
+function countUp(now) {
+  const t = Math.min((now - t0) / FILL_MS, 1);
+  const p = Math.round(easeInOut(t) * 100);
+  fill.style.width = p + '%';
+  num.textContent = String(p).padStart(3, '0');
+  if (t < 1) requestAnimationFrame(countUp);
+  else finish();
+}
+requestAnimationFrame(countUp);
+
+/* Failsafe. requestAnimationFrame stalls whenever the tab is not
+   foregrounded, and a loader whose exit depends on it can trap the
+   page behind a full-screen panel forever. A wall-clock timer cannot
+   stall, so the page always gets out. */
+setTimeout(finish, FILL_MS + 500);
+
+/* ============================================================
+   2. Scroll reveals.
+
+   Deliberately NOT IntersectionObserver. An observer that fails to
+   fire — throttled tab, odd embedding, an exception in its callback
+   — leaves the whole page permanently at opacity:0, which is exactly
+   what happened here the first time. A plain rect check on scroll
+   can only ever be late, never silent, and a safety pass guarantees
+   nothing stays hidden.
+   ============================================================ */
+let rvQueue = [];
+function revealCheck() {
+  const vh = innerHeight;
+  let shown = 0;
+  rvQueue = rvQueue.filter(el => {
+    const r = el.getBoundingClientRect();
+    if (r.top < vh * 0.92 && r.bottom > 0) {
+      setTimeout(() => el.classList.add('in'), Math.min(shown++, 5) * 70);
+      return false;
+    }
+    return true;
+  });
+}
+function kickReveals() {
+  rvQueue = [...document.querySelectorAll('.rv')];
+  revealCheck();
+  addEventListener('scroll', revealCheck, { passive: true });
+  addEventListener('resize', revealCheck);
+  // Safety net: nothing on this page is allowed to stay invisible.
+  setTimeout(() => document.querySelectorAll('.rv').forEach(e => e.classList.add('in')), 4000);
+  const h = document.getElementById('hdr');
+  h.style.transition = 'opacity .7s ease';
+  h.style.opacity = '1';
+}
+if (matchMedia('(prefers-reduced-motion: reduce)').matches) { ready = true; kickReveals(); }
+
+/* ============================================================
+   3. Clock — farm-local time. The product is timezone-aware
+      because night is when this matters most.
+   ============================================================ */
+const MON = ['January','February','March','April','May','June','July',
+             'August','September','October','November','December'];
+function tick() {
+  const d = new Date();
+  let h = d.getHours(); const m = String(d.getMinutes()).padStart(2,'0');
+  const ap = h >= 12 ? 'pm' : 'am'; h = h % 12 || 12;
+  document.getElementById('clk').textContent  = `${h}:${m}${ap}`;
+  document.getElementById('clkd').textContent = `${d.getDate()} ${MON[d.getMonth()]}`;
+}
+tick(); setInterval(tick, 1000);
+
+/* ============================================================
+   4. Count-up stats, driven by scroll entry.
+   ============================================================ */
+let statQueue = [...document.querySelectorAll('[data-count]')];
+function statCheck() {
+  const vh = innerHeight;
+  statQueue = statQueue.filter(el => {
+    const r = el.getBoundingClientRect();
+    if (r.top > vh * 0.85 || r.bottom < 0) return true;
+    const target = +el.dataset.count, suf = el.dataset.suffix || '';
+    const start = performance.now(), DUR = 1100;
+    (function step(now){
+      const t = Math.min((now - start) / DUR, 1);
+      el.textContent = Math.round((1 - Math.pow(1 - t, 3)) * target) + suf;
+      if (t < 1) requestAnimationFrame(step);
+    })(start);
+    return false;
+  });
+}
+statCheck();
+addEventListener('scroll', statCheck, { passive: true });
+
+/* ============================================================
+   5. THE HERO — you are the animal.
+      A highway runs along the top. Your cursor is a cow. Move
+      toward the road and the collar cues you: an arc on the side
+      you are being steered FROM, ramping as you close. Below 15 m
+      it goes continuous on both sides. This is the product, felt.
+   ============================================================ */
+const cv = document.getElementById('field');
+const ctx = cv.getContext('2d');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let W = 0, H = 0, dpr = 1, roadY = 0, zone = null;
+function size() {
+  const r = cv.getBoundingClientRect();
+  dpr = Math.min(devicePixelRatio || 1, 2);
+  W = r.width; H = r.height;
+  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  roadY = H * 0.17;                                  // highway near the top
+  zone = { x: W * 0.5, y: H * 0.68, r: Math.min(W, H) * 0.30 };
+}
+size();
+new ResizeObserver(size).observe(cv);
+
+// The herd: correlated random walk, gently held by the field.
+const herd = Array.from({ length: 14 }, () => ({
+  x: 0, y: 0, a: Math.random() * Math.PI * 2, s: 0.12 + Math.random() * 0.22, init: false
+}));
+
+// You.
+const you = { x: -999, y: -999, px: -999, py: -999, active: false, v: 0, t: 0 };
+
+addEventListener('pointermove', (e) => {
+  const r = cv.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top;
+  if (x < 0 || y < 0 || x > r.width || y > r.height) { you.active = false; return; }
+  if (!you.active) { you.py = y; you.t = performance.now(); }
+  you.x = x; you.y = y; you.active = true;
+  const hint = document.getElementById('hint');
+  if (hint) hint.style.opacity = '0.25';
+}, { passive: true });
+
+// Readout elements
+const roRoad = document.getElementById('ro-road');
+const roClose = document.getElementById('ro-close');
+const roZone = document.getElementById('ro-zone');
+const roCue = document.getElementById('ro-cue');
+const roCueL = document.getElementById('ro-cuelabel');
+const roInt = document.getElementById('ro-int');
+
+// metres-per-pixel so the readout speaks in real units
+const MPP = 0.55;
+let lastUI = 0;
+
+function draw(now) {
+  ctx.clearRect(0, 0, W, H);
+
+  // ---- ground: dusk field ----
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, '#16241B'); g.addColorStop(0.45, '#101B14'); g.addColorStop(1, '#0B1410');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+  // ---- the highway ----
+  ctx.fillStyle = '#1B1B1E';
+  ctx.fillRect(0, roadY - H * 0.045, W, H * 0.09);
+  ctx.strokeStyle = 'rgba(214,40,40,.55)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(0, roadY - H*0.045); ctx.lineTo(W, roadY - H*0.045);
+  ctx.moveTo(0, roadY + H*0.045); ctx.lineTo(W, roadY + H*0.045); ctx.stroke();
+  // centre dashes
+  ctx.setLineDash([18, 22]); ctx.strokeStyle = 'rgba(244,242,236,.28)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(0, roadY); ctx.lineTo(W, roadY); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.font = '600 11px ui-monospace, monospace';
+  ctx.fillStyle = 'rgba(244,242,236,.35)';
+  ctx.fillText('NH-48', 24, roadY - H*0.045 - 10);
+
+  // ---- the grazing boundary ----
+  ctx.setLineDash([6, 8]);
+  ctx.strokeStyle = 'rgba(242,194,0,.45)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(zone.x, zone.y, zone.r, 0, Math.PI * 2); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(242,194,0,.05)';
+  ctx.beginPath(); ctx.arc(zone.x, zone.y, zone.r, 0, Math.PI * 2); ctx.fill();
+
+  // ---- the herd ----
+  herd.forEach((c) => {
+    if (!c.init) {
+      const t = Math.random() * Math.PI * 2, rr = Math.sqrt(Math.random()) * zone.r * 0.82;
+      c.x = zone.x + Math.cos(t) * rr; c.y = zone.y + Math.sin(t) * rr; c.init = true;
+    }
+    if (!reduce) {
+      c.a += (Math.random() - 0.5) * 0.35;
+      // held gently by the field
+      const dx = zone.x - c.x, dy = zone.y - c.y, d = Math.hypot(dx, dy);
+      if (d > zone.r * 0.78) c.a += Math.atan2(dy, dx) * 0.03 + (Math.atan2(dy,dx) - c.a) * 0.06;
+      c.x += Math.cos(c.a) * c.s; c.y += Math.sin(c.a) * c.s;
+    }
+    ctx.fillStyle = 'rgba(126,148,129,.85)';
+    ctx.beginPath(); ctx.arc(c.x, c.y, 3.2, 0, Math.PI * 2); ctx.fill();
+  });
+
+  // ---- you, and the cue ----
+  let level = 0, side = 0, distM = 999, closing = 0;
+  if (you.active) {
+    const dRoadPx = Math.max(0, you.y - roadY - H * 0.045);
+    distM = dRoadPx * MPP;
+
+    // Closing speed toward the road, in real m/s.
+    //
+    // Must be normalised by TIME, not measured per event — pointer events
+    // fire at wildly different rates, and a single large jump was reading
+    // as 79 m/s (285 km/h) for an animal that tops out around 8.
+    const dt = Math.max((now - you.t) / 1000, 1 / 120);
+    const vy = (you.y - you.py) / dt;              // px per second, +down
+    you.py = you.y; you.t = now;
+    const raw = Math.max(0, -vy) * MPP;            // toward the road only
+    you.v += (Math.min(raw, 8) - you.v) * 0.25;    // smooth, clamp to cattle speed
+    closing = you.v < 0.05 ? 0 : you.v;
+
+    if (distM < 8)       level = 4;
+    else if (distM < 30 && closing > 0.05) level = 3;
+    else if (distM < 80 && closing > 0.05) level = 2;
+    else if (distM < 150 && closing > 0.05) level = 1;
+
+    // which ear: she walks AWAY from the sound, so cue the side
+    // opposite the direction we want her to turn.
+    side = (you.x < W / 2) ? 1 : -1;
+
+    // cue arc
+    if (level > 0) {
+      const pulse = 0.55 + 0.45 * Math.sin(now / (level >= 4 ? 90 : 260 - level * 45));
+      const col = level >= 4 ? '214,40,40' : '242,194,0';
+      for (let k = 0; k < level; k++) {
+        ctx.strokeStyle = `rgba(${col},${(0.5 - k * 0.09) * pulse})`;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        if (level >= 4) ctx.arc(you.x, you.y, 16 + k * 9, 0, Math.PI * 2);
+        else {
+          const base = side > 0 ? 0 : Math.PI;
+          ctx.arc(you.x, you.y, 16 + k * 9, base - 0.7, base + 0.7);
+        }
+        ctx.stroke();
+      }
+    }
+
+    // the animal
+    ctx.fillStyle = level >= 4 ? '#D62828' : level > 0 ? '#F2C200' : '#F4F2EC';
+    ctx.beginPath(); ctx.arc(you.x, you.y, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = 'rgba(11,20,16,.9)'; ctx.lineWidth = 2; ctx.stroke();
+
+    // line to the road while cueing
+    if (level > 0) {
+      ctx.setLineDash([3, 6]);
+      ctx.strokeStyle = `rgba(242,194,0,.3)`; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(you.x, you.y); ctx.lineTo(you.x, roadY + H*0.045); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  // ---- readout, throttled ----
+  if (now - lastUI > 90) {
+    lastUI = now;
+    const inZone = you.active
+      ? Math.hypot(you.x - zone.x, you.y - zone.y) < zone.r : true;
+    roRoad.textContent  = you.active ? `${Math.round(distM)} m` : '—';
+    roClose.textContent = `${closing.toFixed(1)} m/s`;
+    roZone.textContent  = inZone ? 'yes' : 'no';
+    roZone.style.color  = inZone ? '' : '#F2C200';
+    roCue.style.width   = (level / 4 * 100) + '%';
+    roCue.style.background = level >= 4 ? '#D62828' : '#F2C200';
+    roCueL.textContent = ['Collar quiet','Tone','Faster tone','Tone + vibration','Continuous — both ears'][level];
+    roCueL.style.color = level >= 4 ? '#D62828' : level > 0 ? '#F2C200' : '';
+    roInt.textContent = level >= 3 ? '5 sec' : level > 0 ? '15 sec' : '10 min';
+  }
+
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+</script>
