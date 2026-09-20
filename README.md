@@ -1,4 +1,4 @@
-# PashuGuard
+ # PashuGuard
 
 Real-time cattle safety for smallholder farmers in rural India. Shows where the
 animals are, warns the farmer **before** an animal reaches a dangerous road,
