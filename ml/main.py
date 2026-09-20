@@ -1,16 +1,4 @@
-"""
-Stage 2 — learned model service (§7.11). Scaffolded now, trained later.
 
-Gradient boosted trees (LightGBM), NOT a neural network: the dataset is small
-and tabular, the output must be explainable to a farmer and an examiner, and it
-has to run in milliseconds inside a 2 s budget.
-
-The label is free. "Did this animal come within 50 m of a base_risk >= 4 road
-in the following 10 minutes?" is computed retroactively from `telemetry`, so
-every historical fix labels itself — no annotation, no manual dataset.
-
-    uvicorn ml.main:app --reload --port 8000
-"""
 
 from __future__ import annotations
 
